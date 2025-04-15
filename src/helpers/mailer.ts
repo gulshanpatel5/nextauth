@@ -33,7 +33,7 @@ export const sendEmail = async({email, emailType, userId}:any) =>
                 to: email,
                 subject: emailType === 'VERIFIED' ? "Verify Your email" : "Reset your password", 
                 
-                html: `<p> Click <a href="">here</a> to $ {emailType === "VERIFY" ? "verify your email" : "reset your password"} or copy and paste the link below in your browser.<br>
+                html: `<p> Click <a href="${process.env.DOMAIN}/verifyemail?token=${hashedToken}">here</a> to ${emailType === "VERIFY" ? "verify your email" : "reset your password"} or copy and paste the link below in your browser.<br> ${process.env.DOMAIN}/verifyemail?token=${hashedToken}
                 </p> `,
               }
         
@@ -42,8 +42,12 @@ export const sendEmail = async({email, emailType, userId}:any) =>
 
         
 
-    } catch (error: any) {
-        throw new Error(error.message)
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred');
+        }
 
     }
 }
